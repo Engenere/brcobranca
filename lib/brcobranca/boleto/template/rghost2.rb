@@ -111,7 +111,7 @@ begin
   
           # Define o template a ser usado no boleto
           def modelo_generico_template(doc, _boleto, template_path)
-            doc.define_template(:template, template_path, x: '0.732 cm', y: '3.48 cm')
+            doc.define_template(:template, template_path, x: 0.728, y: 2.632)
             doc.use_template :template
   
             doc.define_tags do
@@ -125,96 +125,123 @@ begin
   
           # Monta Recibo do Beneficiário
           def modelo_recibo_beneficiario(doc, boleto)
-            doc.moveto x:  4.28, y: 26.87
+            doc.moveto x:  4.28, y: 26.397
             doc.show truncar(boleto.cedente, 90), tag: :menor
-            doc.moveto x:  4.28, y: 26.33
+            doc.moveto x:  4.28, y: 25.840
             doc.show truncar(boleto.sacado, 90), tag: :menor
-            doc.moveto x:  4.28, y: 25.76
+            doc.moveto x:  4.28, y: 25.291
             doc.show boleto.documento_numero, tag: :menor
-            doc.moveto x:  4.28, y: 25.20
+            doc.moveto x:  4.28, y: 24.728
             doc.show boleto.nosso_numero_boleto, tag: :menor
-            doc.moveto x:  4.28, y: 24.63
+            doc.moveto x:  4.28, y: 24.172
             doc.show boleto.data_vencimento.to_s_br, tag: :menor
-            doc.moveto x:  4.28, y: 24.070
+            doc.moveto x:  4.28, y: 23.627
             doc.show "#{boleto.banco}-#{boleto.banco_dv}", tag: :menor
-            doc.moveto x:  4.28, y: 23.49
+            doc.moveto x:  4.28, y: 23.061
             doc.show boleto.agencia_conta_boleto, tag: :menor
-            doc.moveto x:  4.28, y: 22.95
+            doc.moveto x:  4.28, y: 22.505
             doc.show boleto.valor_documento.to_currency, tag: :menor
           end
   
           # Monta Recibo do Pagador boleto
           def modelo_generico_cabecalho(doc, boleto)
-            monta_logotipo(doc, boleto, 0.782, 19.717, 0.85)
-            doc.moveto x:  4.813, y: 19.801
+            monta_logotipo(doc, boleto, 0.757, 19.717, 0.85)
+
+            doc.moveto x:  4.9, y: 19.820
             doc.show "#{boleto.banco}-#{boleto.banco_dv}", tag: :medio
+
             doc.moveto x:  0.823, y: 20.942
             doc.show boleto.codigo_barras.linha_digitavel, tag: :menor_bold
-            doc.moveto x:  1.121, y: 18.924
-            doc.show truncar(boleto.cedente, 47), tag: :menor
-            doc.moveto x:  9.9, y: 18.924
+
+            doc.moveto x:  0.835, y: 18.894
+            doc.show truncar(boleto.cedente, 72), tag: :menor
+            if boleto.cedente_endereco
+              doc.moveto x:  0.835, y: 17.985
+              doc.show truncar(boleto.cedente_endereco.to_s, 72), tag: :menor
+            end
+
+            doc.moveto x:  13.861, y: 18.903
             doc.show boleto.agencia_conta_boleto.tr(' ', ''), tag: :menor
-            doc.moveto x:  16.423, y: 18.924
+
+            doc.moveto x:  16.154, y: 17.985
             doc.show boleto.nosso_numero_boleto, tag: :menor
-            doc.moveto x:  1.121, y: 17.984
+
+            doc.moveto x:  0.835, y: 17.068
             doc.show boleto.documento_numero, tag: :menor
-            doc.moveto x:  14.139, y: 18.924
+
+            doc.moveto x:  13.861, y: 17.985
             doc.show boleto.quantidade, tag: :menor
-            doc.moveto x:  7.0, y: 17.984
+
+            doc.moveto x:  6.912, y: 17.068
             doc.show boleto.documento_cedente.formata_documento.to_s, tag: :menor
-            doc.moveto x:  10.602, y: 17.984
+
+            doc.moveto x:  10.334, y: 17.068
             doc.show boleto.data_vencimento.to_s_br, tag: :menor
-            doc.text_area "<menor>#{boleto.valor_documento.to_currency}</menor>", width: 5.78, text_align: :right, x:  14.12, y: 17.984, tag: :menor
-            doc.moveto x:  1.109, y: 17.089
+            doc.text_area "<menor>#{boleto.valor_documento.to_currency}</menor>", width: 6.3, text_align: :right, x:  13.861, y: 17.068, tag: :menor
+            doc.moveto x:  0.835, y: 16.151
             doc.show truncar(boleto.sacado, 109), tag: :menor
           end
   
           # Monta o corpo e rodapé do layout do boleto
           def modelo_generico_rodape(doc, boleto)
-            monta_logotipo(doc, boleto, 0.782, 13.9, 0.85)
-            doc.text_area "<menor_bold>#{boleto.data_vencimento.to_s_br if boleto.data_vencimento}</menor_bold>", width: 5.786, text_align: :center, x: 14.47271, y: 13.11587
-            doc.text_area "<menor>#{boleto.agencia_conta_boleto}</menor>", width: 5.786, text_align: :center, x:  14.47271, y: 12.26921
-            doc.text_area "<menor>#{boleto.nosso_numero_boleto}</menor>", width: 5.786, text_align: :center, x:  14.47271, y: 11.42254
-            doc.text_area "<menor_bold>#{boleto.valor_documento.to_currency}</menor_bold>", width: 5.5, text_align: :right, x:  14.47271, y: 10.56926
-            doc.moveto x:  4.813, y: 13.977
+            monta_logotipo(doc, boleto, 0.757, 13, 0.85)
+            doc.text_area "<menor>#{boleto.data_vencimento.to_s_br if boleto.data_vencimento}</menor>", width: 5.585, text_align: :center, x: 14.568, y: 12.270 
+            doc.text_area "<menor>#{boleto.agencia_conta_boleto}</menor>", width: 5.585, text_align: :center, x: 14.568, y: 11.424
+            doc.text_area "<menor>#{boleto.nosso_numero_boleto}</menor>", width: 5.585, text_align: :center, x: 14.568, y: 10.56926
+            doc.text_area "<menor>#{boleto.valor_documento.to_currency}</menor>", width: 5.585, text_align: :right, x: 14.568, y: 9.731
+
+            doc.moveto x:  4.9, y: 13.10
             doc.show "#{boleto.banco}-#{boleto.banco_dv}", tag: :medio
-            doc.moveto x:  6.815, y: 13.990
+
+            doc.moveto x:  6.815, y: 13.10
             doc.show boleto.codigo_barras.linha_digitavel, tag: :maior
-            doc.moveto x:  1.121, y: 13.2
+
+            doc.moveto x:  0.835, y: 12.270
             doc.show boleto.local_pagamento, tag: :menor
-            doc.moveto x:  1.121, y: 12.295
+
+            doc.moveto x:  0.835, y: 11.424
             doc.show truncar(boleto.cedente,54), tag: :menor
-            doc.moveto x:  11.307, y: 12.295
+
+            doc.moveto x:  11.031, y: 11.424
             doc.show boleto.documento_cedente.formata_documento.to_s, tag: :menor
-            doc.moveto x:  1.112, y: 11.42
+
+            doc.moveto x:  0.835, y: 10.577
             doc.show (boleto.data_documento.to_s_br if boleto.data_documento), tag: :menor
-            doc.moveto x:  4.268, y: 11.42
+
+            doc.moveto x:  4.028, y: 10.577
             doc.show boleto.documento_numero, tag: :menor
-            doc.moveto x: 7.471, y: 11.42
+
+            doc.moveto x: 7.203, y: 10.577
             doc.show boleto.especie_documento, tag: :menor
-            doc.moveto x: 9.588, y: 11.42
+
+            doc.moveto x: 9.320, y: 10.577
             doc.show boleto.aceite, tag: :menor
-            doc.moveto x: 11.660, y: 11.42
+
+            doc.moveto x: 11.383, y: 10.577
             doc.show (boleto.data_processamento.to_s_br if boleto.data_processamento), tag: :menor
-            doc.moveto x: 4.62056, y: 10.56058
+
+            doc.moveto x: 4.372, y: 9.730
             if boleto.variacao
-              doc.show "#{boleto.carteira}-#{boleto.variacao}"
+              doc.show "#{boleto.carteira}-#{boleto.variacao}", tag: :menor
             else
-              doc.show boleto.carteira
+              doc.show boleto.carteira, tag: :menor
             end
-            doc.moveto x: 7.26640, y: 10.56058
-            doc.show boleto.especie
-            monta_instrucoes(doc, boleto, 0.8, 9.8)
+
+            # Especie da Moeda
+            doc.moveto x: 7.018, y: 9.730
+            doc.show boleto.especie, tag: :menor
+
+            monta_instrucoes(doc, boleto, 0.835, 9.0)
             pagador = "<menor>#{truncar(boleto.sacado,75)} - CPF/CNPJ: #{boleto.sacado_documento.formata_documento}</menor>"
             pagador += "\n<menor>#{boleto.sacado_endereco.to_s}</menor>" if boleto.sacado_endereco
-            doc.text_area pagador, width: 18, text_align: :left, x: 2.04611, y: 5.8, row_height: '0.4 cm'
+            doc.text_area pagador, width: 18, text_align: :left, x: 0.835, y: 4.70, row_height: '0.4 cm'
             avalista = "#{truncar(boleto.avalista,46)} - CPF/CNPJ:  #{boleto.avalista_documento.formata_documento.to_s}" if boleto.avalista && boleto.avalista_documento
             if avalista
-              doc.text_area "<menor2>#{avalista}</menor2>", width: 12.312, text_align: :left, x: 2.04611, y: 4.3, row_height: '0.4 cm'
+              doc.text_area "<menor2>#{avalista}</menor2>", width: 12.312, text_align: :left, x: 1.877, y: 3.312, row_height: '0.4 cm'
             end
             # Gerando codigo de barra com rghost_barcode
             if boleto.codigo_barras
-              doc.barcode_interleaved2of5(boleto.codigo_barras, width: '10.3 cm', height: '1.3 cm', x: 1.06, y: 2.12)
+              doc.barcode_interleaved2of5(boleto.codigo_barras, width: '10.3 cm', height: '1.3 cm', x: 1.2, y: 1.231)
             end
             # FIM Segunda parte do BOLETO
           end
