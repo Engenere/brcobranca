@@ -9,7 +9,7 @@ module Brcobranca
 
         validates_presence_of :digito_agencia, :convenio, :conta_corrente, message: 'não pode estar em branco.'
         validates_length_of :convenio, maximum: 6, message: 'deve ter 6 dígitos.'
-        validates_length_of :conta_corrente, maximum: 7, message: 'deve ter 7 dígitos.'
+        validates_length_of :conta_corrente, maximum: 12, message: 'deve ter no máximo 12 dígitos.'
         validates_length_of :digito_agencia, is: 1, message: 'deve ter 1 dígito.'
 
         def initialize(campos = {})
@@ -25,7 +25,7 @@ module Brcobranca
         end
 
         def conta_corrente=(valor)
-          @conta_corrente = valor.to_s.rjust(7, '0') if valor
+          @conta_corrente = valor.to_s.rjust(12, '0') if valor
         end
 
         def cod_banco
